@@ -10,10 +10,10 @@ First things first, I wanted to get the minimum possible thing that Qemu
 wouldn't yell at me about, which basically means installing a boot loader.
 Small footprint + easy = Syslinux.
 Process is as follows:
-    - Mount boot partition to ./disk-boot
-    - Run `extlinux -i ./disk-boot`
-    - Unmount ./disk-boot
-    - Embed Syslinux: `dd bs=440 count=1 conv=notrunc if=/usr/lib/syslinux/bios/mbr.bin of=hd.raw`
+- Mount boot partition to `./disk-boot`
+- Run `extlinux -i ./disk-boot`
+- Unmount `./disk-boot`
+- Embed Syslinux: `dd bs=440 count=1 conv=notrunc if=/usr/lib/syslinux/bios/mbr.bin of=hd.raw`
 
 Bam. Bootable.
 
@@ -32,9 +32,9 @@ That's cool and all, but I want to not be relying on Arch's facilities to do
 heavy lifting for me, so I'm going to build my own initramfs and load that.
 Too much to detail here, but see the initramfs directory for what's going on.
 Some fun discoveries:
-    - If your init is a shell script, you need a shell available (duh). Busybox
-      isn't enough by itself. I needed to link /bin/sh to /bin/busybox to make it 
-      available.
+- If your init is a shell script, you need a shell available (duh). Busybox
+  isn't enough by itself. I needed to link /bin/sh to /bin/busybox to make it 
+  available.
 
 For the actual root filesystem, I'm still using Busybox, because it's a pretty
 dope system. Write a quick /sbin/init file and away we go! Or at least I 
@@ -49,5 +49,5 @@ like, most of the hard stuff, right?
 Now that I'm booted (for sufficiently broad definitions of booting), I need
 to basically do everything I did in the initramfs's init file, except pivot.
 Been there, done that, pretty easy.
-    - TODO
+- TODO
 
