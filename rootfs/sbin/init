@@ -2,11 +2,8 @@
 
 PATH="/bin"
 
-exec sh
-
-
 # mdev (busybox symlinks should be usable when using this)
-MDEV="/bin/mdev"
+MDEV="/bin/busybox mdev"
 
 MOUNT="/bin/busybox mount"
 MKDIR="/bin/busybox mkdir"
@@ -40,3 +37,4 @@ $MDEV -s
 
 # Probably exec getty?
 exec sh
+#exec /bin/busybox getty 38400 tty0

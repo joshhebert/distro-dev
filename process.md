@@ -67,11 +67,30 @@ Having a runnable getty doesn't get me much if user accounts aren't a thing, so 
 the next order of business. I'll come back to starting getty on boot once that's all good.
 It seems that user accounts are provided by shadow, so we install that, providing
 useradd and friends. *In order to get hashed passwords, we need to run pwconv in the VM.*
-We'll also need PAM. PAM 1.3 won't compile against musl, but it's beta anyway. 1.2.1 compiles 
+We'll also need PAM. PAM 1.3 won't compile against musl, but it's beta anyway. 1.2.1 compiles
 just fine. We do also need libtirpc, which is... problematic. I'm going to borrow Alpine's package
 until I can figure out how the fuck they got it to compile with musl. My guess is that cross
 compiling from a glibc system is making this harder.
 
 SO, I install shadow and Alpine's libtirpc/linux-pam compiled binaries, and follow the instructions
-outlined in the LFS page for linux-pam. 
+outlined in the LFS page for linux-pam. Which basically means copying and pasting shit. That's fine
+for now, I guess, but I'll need to come back to this at a later point to understand it more completely.
+However, spinning up getty, I can now login! Which sounds like a stupid thing
+to be excited about, but it actually involved a good deal of troubleshooting.
+A couple issues I ran into:
+- Once Shadow/PAM are installed, there's some setup that still needs to be done. The
+  first thing is to run pwconv. However, this results in the odd scenario of
+  passwd not working (runs, accepts no input, and exits 1 with no password change)
+  I found out that I can use chpasswd to set passwords. Unfortunately, this
+  doesn't fix passwd, but it does mean I can set passwords to test login, meaning
+  PAM and shadow more or less work.
+  Note: I later found out that passwd basically needs to be running in some tty,
+  not the weird boot up console you get from calling sh straight out of init. So
+  if I spin up getty on ttyS0 or whatever and log in, I can then call passwd without
+  a problem.
+- su needs suid bit set (duh)
+- Pretty much all files at this point should be owned by root:root (and should
+  appear in ls -l as root:root, not 0:0)
+
+## Starting getty on boot (wrangling inittab)
 
