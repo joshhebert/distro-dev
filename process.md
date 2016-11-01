@@ -92,5 +92,11 @@ A couple issues I ran into:
 - Pretty much all files at this point should be owned by root:root (and should
   appear in ls -l as root:root, not 0:0)
 
-## Starting getty on boot (wrangling inittab)
+## Cementing progress
+As the eventual goal of this project is to eventually have a distro, now's 
+probably a good time to start thinking about build scripts. I think the next
+steps here should be automating the steps above into a concrete shell script 
+to assemble everything. Shouldn't be too hard<sup>kappa</sup>
 
+## Starting getty on boot (wrangling inittab)
+    Coming soon...
