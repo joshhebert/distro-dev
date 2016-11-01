@@ -106,7 +106,7 @@ SUCCESS=0
 [ -d "$NEWROOT" ] || $MKDIR "$NEWROOT"
 while [ $SUCCESS -ne 1 ]
 do
-        if ! $MOUNT -o ro "$RTDEV" "$NEWROOT"
+        if ! $MOUNT -o rw "$RTDEV" "$NEWROOT"
         then
                 echo ""
                 echo "Couldn't mount root FS read-only!"
@@ -124,6 +124,7 @@ then
         echo "$RTDEV successfully mounted but no $INIT found!"
         shell
 fi
+
 
 # Reset kernel hotplugging
 echo "Resetting kernel hotplugging"

@@ -1,4 +1,4 @@
-# Adventures in Building a Distro
+# Adventures in Building a Distro (31/10/2016)
 
 ## Generating a disk image
     Nothing special here. Created a disk image with two partitions, boot and
@@ -32,12 +32,12 @@
     Too much to detail here, but see the initramfs directory for what's going on.
     Some fun discoveries:
         - If your init is a shell script, you need a shell available (duh). Busybox
-        isn't enough by itself. I needed to link /bin/sh to /bin/busybox to make it 
+        isn't enough by itself. I needed to link /bin/sh to /bin/busybox to make it
         available.
 
     For the actual root filesystem, I'm still using Busybox, because it's a pretty
-    dope system. Write a quick /sbin/init file and away we go! Or at least I 
-    wish it were that easy. I ended up having to compile a kernel for this (I 
+    dope system. Write a quick /sbin/init file and away we go! Or at least I
+    wish it were that easy. I ended up having to compile a kernel for this (I
     mean, I was going to have to do it eventually anyhow), as with just Arch's kernel,
     my keyboard didn't work. I think it had something to do with mdev.
 
@@ -47,6 +47,30 @@
 ## Writing an init for the *real* system
     Now that I'm booted (for sufficiently broad definitions of booting), I need
     to basically do everything I did in the initramfs's init file, except pivot.
-    Been there, done that, pretty easy.
-    - TODO
+    Been there, done that, pretty easy. Side note, whatever the init is, it needs
+    to be statically linked. For example, I'm using a shell script interpreted by
+    Busybox, so Busybox needs to be statically linked.
+
+    (1/11/2016)
+    Next step is getting getty up and running. I was going to  use agetty because it looks
+    most complete and modern (it's what Arch uses). It's also part of the util-linux
+    package hosted at kernel.org, which I'd need to grab anyway, so no bloat. HOWEVER,
+    I ran into issues compiling it under musl, and so I looked at what stali uses, that
+    being suckless's ubase. Compiles easily under musl and offers a getty binary, which
+    should be good enough. Besides, it means I don't have to use Busybox for everything in
+    the real system. While Busybox is decent, it's really not sufficient for a full system.
+    Essentially, all I need out of Busybox is mdev for device detection. I'll probably end up
+    compiling a pared down binary to only have this. Oh, it's also nice that it provides sh.
+
+    Having a runnable getty doesn't get me much if user accounts aren't a thing, so that's
+    the next order of business. I'll come back to starting getty on boot once that's all good.
+    It seems that user accounts are provided by shadow, so we install that, providing
+    useradd and friends. *In order to get hashed passwords, we need to run pwconv in the VM.*
+    We'll also need PAM. PAM 1.3 won't compile against musl, but it's beta anyway. 1.2.1 compiles 
+    just fine. We do also need libtirpc, which is... problematic. I'm going to borrow Alpine's package
+    until I can figure out how the fuck they got it to compile with musl. My guess is that cross
+    compiling from a glibc system is making this harder.
+    
+    SO, I install shadow and Alpine's libtirpc/linux-pam compiled binaries, and follow the instructions
+    outlined in the LFS page for linux-pam. 
 
