@@ -98,5 +98,7 @@ probably a good time to start thinking about build scripts. I think the next
 steps here should be automating the steps above into a concrete shell script 
 to assemble everything. Shouldn't be too hard<sup>kappa</sup>
 
-## Starting getty on boot (wrangling inittab)
-    Coming soon...
+(3/11/16)
+I grabbed an Alpine Linux chroot to do compilation in. This vastly simplifies
+the process and fixes a lot of the problems I was having with trying to cross
+compile.
