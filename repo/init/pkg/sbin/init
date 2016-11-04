@@ -1,0 +1,40 @@
+#!/bin/sh
+
+PATH="/bin"
+
+# mdev (busybox symlinks should be usable when using this)
+MDEV="/bin/busybox mdev"
+
+MOUNT="/bin/busybox mount"
+MKDIR="/bin/busybox mkdir"
+
+# EXECUTION BEGINS HERE
+echo "Entering initial boot"
+
+# Ensure that basic directories exist
+for dir in /proc /sys /dev
+do
+    [ -d $dir ] || $MKDIR $dir
+done
+
+# Mount /proc, necessary for other mounts
+echo "Mounting procfs"
+$MOUNT -t proc proc /proc
+
+# Mount /sys, necessary to create the device mapper control device
+echo "Mounting sysfs"
+$MOUNT -t sysfs sys /sys
+
+# Mount tmpfs on /dev and set up /dev/pts
+echo "Mounting tmpfs on /dev and running mdev ..."
+$MOUNT -t tmpfs dev /dev
+$MKDIR -p /dev/pts
+$MOUNT -t devpts devpts /dev/pts
+# Run mdev and populate /dev with device nodes
+echo "$MDEV" > /proc/sys/kernel/hotplug
+$MDEV -s
+
+
+# Probably exec getty?
+exec sh
+#exec /bin/busybox getty 38400 tty0
